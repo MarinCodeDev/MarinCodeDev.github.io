@@ -9,12 +9,16 @@ body {
 }
 
 #m-page-title {
+    position: absolute;
+    top: 18px;
     display: inline-block;
     text-align: center;
     margin-right: 11.5em;
-    width: auto;
+    width: 100%;
     font-weight: 400;
     font-size: 2em;
+    z-index: 0;
+    color: #fff;
 }
 
 #m-notes-new-trash a {
@@ -73,6 +77,59 @@ body {
     min-height: 200px;
 }
 
+
+#m-list-notes .form-check-label {
+    color: white;
+}
+.form-check-input:checked + .form-check-label {
+
+    text-decoration: line-through;
+    animation-name: m-strike;
+    animation-duration: 0.2s;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+
+@keyframes m-strike {
+    from {
+        color: #fff; 
+        text-decoration-color: transparent;
+    }
+
+    to {
+        color: #999;
+        text-decoration-color: #999;
+    }
+}
+
+.m-strike {
+    position: relative;
+    animation: m-strike 2s linear;
+    text-decoration: line-through;
+}
+
+.m-strike:checked {
+    display: block;
+    position: absolute;
+    text-decoration: line-through;
+    animation-name: m-strike;
+    animation-duration: 4s;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+.m-trash {
+    color: #fff;
+}
+
+.m-trash:hover {
+    color: red;
+    transition: .3s;
+}
+
 .m-relative {
     position: relative;
     padding-top: 7px;
@@ -115,4 +172,12 @@ input[type=checkbox]:checked {
 
 .form-check-input:focus {
     box-shadow: none;
+}
+
+.m-clear {
+    text-transform: uppercase;
+}
+
+.m-clear:hover {
+    color: #000;
 }
