@@ -12,12 +12,12 @@ body {
     display: inline-block;
     text-align: center;
     margin-right: 11.5em;
-    width: 100%;
+    width: auto;
     font-weight: 400;
     font-size: 2em;
 }
 
-#m-notes-new-trash a{
+#m-notes-new-trash a {
     font-style: oblique;
     text-transform: uppercase;
     font-size: larger;
@@ -88,16 +88,31 @@ body {
     border-style: hidden;
     border-radius: 0;
     border: solid 3px transparent;
-    border-bottom: dashed 3px #000000;
+    border-bottom: dashed 3px #ffffff;
     font-size: 1rem;
     color: white;
     margin: 0 auto 10px auto;
     width: 80%;
 }
 
-.form-control.m-text-zone:focus{
+.form-control.m-text-zone:focus {
     outline-width: 0;
     border-color: transparent transparent rgb(255, 255, 255);
     box-shadow: none;
     color: white;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.473);
+    opacity: 1;
+}
+
+input[type=checkbox]:checked {
+    background-color: #212529 !important;
+    border-color: #000;
+    box-shadow: #fff;
+}
+
+.form-check-input:focus {
+    box-shadow: none;
 }
