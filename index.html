@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr" data-bs-theme="dark">
 
 <head>
   <meta charset="UTF-8">
@@ -19,11 +19,10 @@
   <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="bg-black">
-</div>
+<body>
   <div id="app" v-cloak>
     <h1 class="mb-0 d-none d-md-block" id="m-page-title">To Do List</h1>
-    <nav class="navbar navbar-expand-md navbar-dark bg-transparent mb-4" id="m-navbar">
+    <nav class="navbar navbar-expand-md mb-4" id="m-navbar">
       <div class="container-fluid">
         <button class="navbar-toggler m-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
           aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,9 +34,6 @@
               <a class="nav-link active" @click="goToNotes()">Notes</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" @click="goToNew()">Nouveau</a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link" @click="goToTrash()">Corbeille</a>
             </li>
           </ul>
@@ -46,13 +42,12 @@
     </nav>
 
     <main class="container">
-      <div class="p-5 rounded">
         <div class="row justify-content-md-center">
-          <div class="col-md-6 text-light rounded-3 m-middle-case" id="m-notes" v-if="page == 'notes'|| page == 'new'">
+          <div class="col-md-6 rounded-3 m-middle-case" id="m-notes" v-if="page == 'notes'|| page == 'new'">
             <h2 class="m-h2">Notes</h2>
             <div class="m-list-notes">
               <ul class="list-group">
-                <li class="list-group-item bg-black" v-for="(note, index) in notes">
+                <li class="list-group-item" v-for="(note, index) in notes">
                   <div class="row">
                     <div class="col-sm-8 m-relative" :class="{'p-0': note.edition}">
                       <input class="form-check-input me-1 m-checkbox" type="checkbox" value="" :id="'note-' + index"
@@ -64,7 +59,7 @@
                           v-model="note.message" v-if="note.edition == true" /></form>
                     </div>
 
-                    <div class="col-sm-4"><button type="submit" class="btn btn-outline-light btn-sm"
+                    <div class="col-sm-4"><button type="submit" class="btn btn-sm btn-outline-dark"
                         @click="startEdit(note)">Modifier</button><button type="button" class="btn text-light"><i
                           class="bi bi-trash3 m-trash" @click="removeNote(index)"></i></button></div>
                   </div>
@@ -75,8 +70,9 @@
               <form @submit.prevent="addNote()">
                 <h2 class="m-h2" id="new">Nouveau</h2>
                 <input class="m-text-zone form-control bg-transparent" placeholder="Ecrivez votre nouvelle note..."
-                  type="text" id="todo" name="to-do" autofocus required v-model="newNote" />
-                <div class="text-center m-button"><button type="submit" class="btn btn-outline-light">Ajouter</button>
+                  type="text" id="newNote" autofocus required v-model="newNote" /> 
+                  <label class="visually-hidden" for="newNote">Nouvelle note à saisir</label>
+                <div class="text-center m-button"><button type="submit" class="btn btn-outline-dark">Ajouter</button>
                 </div>
               </form>
               <div class="text-right btn-group" role="group"><button type="button"
@@ -87,17 +83,12 @@
             </div>
           </div>
         </div>
-      </div>
-    </main>
-
-    <main class="container">
-      <div class="p-5 rounded">
         <div class="row justify-content-md-center">
-          <div class="col-md-6 text-light rounded-3 m-middle-case" id="m-trashes" v-if="page == 'trash'">
+          <div class="col-md-6 rounded-3 m-middle-case" id="m-trashes" v-if="page == 'trash'">
             <h2 class="m-h2">Corbeille</h2>
             <div class="m-list-notes">
               <ul class="list-group">
-                <li class="list-group-item bg-black" v-for="(note, index) in trashes">
+                <li class="list-group-item" v-for="(note, index) in trashes">
                   <div class="row">
                     <div class="col-sm-10 m-relative">
                       <input class="form-check-input me-1 m-checkbox" type="checkbox" value=""
@@ -105,7 +96,7 @@
                       <label class="form-check-label stretched-link d-inline" :for="'note-' + index">
                         {{note.message}}</label>
                     </div>
-                    <div class="col-sm-2"><button type="button" class="btn text-light"><i class="bi bi-trash3 m-trash"
+                    <div class="col-sm-2"><button type="button" class="btn"><i class="bi bi-trash3 m-trash"
                           @click="removeTrash(index)"></i></button>
                     </div>
                   </div>
@@ -120,7 +111,6 @@
           </div>
         </div>
       </div>
-  </div>
   </main>
   </div>
 
