@@ -26,6 +26,7 @@ body {
     text-transform: uppercase;
     font-size: larger;
     color: #fff;
+    cursor: pointer;
 }
 
 #m-notes-new-trash li {
@@ -68,20 +69,29 @@ body {
     padding-top: 10px;
 }
 
-#m-notes {
+.m-middle-case {
     background-color: #212529;
     border-radius: 10px;
+
 }
 
-#m-list-notes {
+.m-message {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.m-list-notes {
     min-height: 200px;
+    padding-bottom: 20px;
 }
 
 
-#m-list-notes .form-check-label {
+.m-list-notes .form-check-label {
     color: white;
 }
-.form-check-input:checked + .form-check-label {
+
+.form-check-input:checked+.form-check-label {
 
     text-decoration: line-through;
     animation-name: m-strike;
@@ -91,10 +101,9 @@ body {
     animation-fill-mode: forwards;
 }
 
-
 @keyframes m-strike {
     from {
-        color: #fff; 
+        color: #fff;
         text-decoration-color: transparent;
     }
 
@@ -135,10 +144,6 @@ body {
     padding-top: 7px;
 }
 
-#m-new_note {
-    margin-bottom: 10px;
-}
-
 .m-text-zone {
     font-family: Montserrat;
     background-color: transparent;
@@ -174,6 +179,10 @@ input[type=checkbox]:checked {
     box-shadow: none;
 }
 
+.m-button {
+    margin-bottom: 10px;
+}
+
 .m-clear {
     text-transform: uppercase;
 }
@@ -182,6 +191,10 @@ input[type=checkbox]:checked {
     color: #000;
 }
 
-[v-cloak]{
+.m-footer-action {
+    margin-bottom: 10px;
+}
+
+[v-cloak] {
     display: none;
 }

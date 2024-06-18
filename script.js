@@ -1,27 +1,19 @@
-// const { createApp, ref } = Vue
-
-//   createApp({
-//     setup() {
-//       const message = ref('Hello vue!')
-//       return {
-//         message
-//       }
-//     }
-//   }).mount('#app')
-
+import {createApp, ref } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 const App = {
     data() {
+        const storageData = this.load();
+        
+        console.log("storageData", storageData);
         return {
             page: "notes",
-            notes: [],
+            notes: storageData.notes,
 
-            trashes: [
-                { message: "Trash note", done: true },
-            ],
+            trashes: storageData.trashes,
 
             newNote: ""
         }
     },
+
     methods: {
         goToNotes() {
             this.page = "notes"
@@ -42,40 +34,66 @@ const App = {
                     });
 
                 this.newNote = ""
+                this.save()
             }
         },
+
+        startEdit(note){
+            note.edition = true
+        },
+
+        endEdit(note){
+            note.edition = false
+        },
+
         removeNote(index) {
+            this.trashes.push(this.notes[index]);
             this.notes.splice(index, 1);
+            this.save()
         },
 
         removeAllNote() {
+            this.trashes = this.trashes.concat(this.notes);
             this.notes = [];
+            this.save()
         },
 
         removeDoneNote() {
-            this.notes = this.notes.filter((note) => note.done == false)
-        },
-
-        addTrash() {
-            this.trashes.push(
-                {
-                    message: this.newNote,
-                    done: false
-                });
-
-            this.newNote = ""
+            var noteDone = this.notes.filter((note) => note.done == true);
+            this.notes = this.notes.filter((note) => note.done == false);
+            this.trashes = this.trashes.concat(noteDone);
+            this.save()
         },
 
         removeTrash(index) {
             this.trashes.splice(index, 1);
+            this.save()
         },
 
         removeAllTrash() {
             this.trashes = [];
+            this.save()
+        },
+
+        save() {
+            window.localStorage.setItem("trashes", JSON.stringify(this.trashes));
+            window.localStorage.setItem("notes", JSON.stringify(this.notes));
+        },
+        
+        loadItem(itemId) {
+            let values = window.localStorage.getItem(itemId);
+            return values ? JSON.parse(values) : [];
+        },
+            
+        load() {
+            return {
+                trashes: this.loadItem("trashes"),
+                notes: this.loadItem("notes"),
+            };
         },
 
     }
 }
 
-Vue.createApp(App).mount('#app')
+createApp(App).mount('#app')
 
