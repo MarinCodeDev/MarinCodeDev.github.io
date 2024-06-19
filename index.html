@@ -7,10 +7,7 @@
   <title>To Do List</title>
   <link rel="icon" type="image/png" href="favicon.png">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
+    crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,6 +25,7 @@
           aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <ul class="navbar-nav me-auto mb-2 mb-md-0" id="m-notes-new-trash">
             <li class="nav-item">
@@ -40,80 +38,119 @@
         </div>
       </div>
     </nav>
+    <div class="dropdown" id="m-theme-toggler">
+      <button class="btn text-black dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+        id="bd-theme">
+        <span class="bi my-1 theme-icon-active"><i class="bi bi-sun-fill"></i></span>
+        <span class="d-lg-none ms-2 visually-hidden" id="bd-theme-text">Toggle theme</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+        <li>
+          <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light"
+            aria-pressed="false">
+            <span class="bi me-2 opacity-50"><i class="bi bi-sun-fill"></i></span>
+            Clair
+          </button>
+        </li>
+        <li>
+          <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="dark"
+            aria-pressed="true">
+            <span class="bi me-2 opacity-50"><i class="bi bi-moon-stars-fill"></i></span>
+            Sombre
+          </button>
+        </li>
+      </ul>
+    </div>
+
 
     <main class="container">
-        <div class="row justify-content-md-center">
-          <div class="col-md-6 rounded-3 m-middle-case" id="m-notes" v-if="page == 'notes'|| page == 'new'">
-            <h2 class="m-h2">Notes</h2>
-            <div class="m-list-notes">
-              <ul class="list-group">
-                <li class="list-group-item" v-for="(note, index) in notes">
-                  <div class="row">
-                    <div class="col-sm-8 m-relative" :class="{'p-0': note.edition}">
-                      <input class="form-check-input me-1 m-checkbox" type="checkbox" value="" :id="'note-' + index"
-                        v-model="note.done" v-if="! note.edition">
-                      <label class="form-check-label d-inline m-message" :for="'note-' + index"
-                        v-if="! note.edition">{{note.message}}</label>
-                      <form @submit.prevent="endEdit(note)"><input class="form-control bg-transparent text-light"
-                          placeholder="Corrigez votre note..." type="text" id="todo" name="to-do" required
-                          v-model="note.message" v-if="note.edition == true" /></form>
-                    </div>
+      <div class="row justify-content-md-center">
+        <div class="col-md-6 rounded-3 m-middle-case" id="m-notes" v-if="page == 'notes'|| page == 'new'">
+          <div class="clearfix">
+            <button type="button" class="btn m-reverse" @click="restoreHistory()" v-if="hasHistory()"><i
+                class="bi bi-arrow-counterclockwise text-black"></i></button>
+            <h2 class="m-h2 mb-1">Notes</h2>
+          </div>
+          <div class="m-list-notes">
+            <ul class="list-group">
+              <li class="list-group-item" v-for="(note, index) in notes">
+                <div class="row">
+                  <div class="col-sm-8 m-relative" :class="{'p-0': note.edition}">
+                    <input class="form-check-input me-1 m-checkbox" type="checkbox" value="" :id="'note-' + index"
+                      v-model="note.done" v-if="! note.edition" @change="checkRefresh()">
+                    <label class="form-check-label d-inline m-message stretched-link" :for="'note-' + index"
+                      v-if="! note.edition">{{note.message}}</label>
+                    <form @submit.prevent="endEdit(note)"><input class="form-control bg-transparent text-light"
+                        placeholder="Corrigez votre note..." type="text" id="todo" name="to-do" required
+                        v-model="note.message" v-if="note.edition == true" /></form>
+                  </div>
 
-                    <div class="col-sm-4"><button type="submit" class="btn btn-sm btn-outline-dark"
-                        @click="startEdit(note)">Modifier</button><button type="button" class="btn text-light"><i
+                  <div class="col-sm-4 clearfix">
+                    <div class="float-end"><button type="submit" class="btn btn-sm btn-outline-dark m-edit"
+                        @click="startEdit(note)">Modifier</button><button type="button" class="btn text-light" data-bs-toggle="tooltip" data-bs-placement="right" title="Supprimer"><i
                           class="bi bi-trash3 m-trash" @click="removeNote(index)"></i></button></div>
                   </div>
-                </li>
-              </ul>
-            </div>
-            <div class="m-footer-action">
-              <form @submit.prevent="addNote()">
-                <h2 class="m-h2" id="new">Nouveau</h2>
-                <input class="m-text-zone form-control bg-transparent" placeholder="Ecrivez votre nouvelle note..."
-                  type="text" id="newNote" autofocus required v-model="newNote" /> 
-                  <label class="visually-hidden" for="newNote">Nouvelle note à saisir</label>
-                <div class="text-center m-button"><button type="submit" class="btn btn-outline-dark">Ajouter</button>
                 </div>
-              </form>
-              <div class="text-right btn-group" role="group"><button type="button"
-                  class="btn btn-outline-danger btn-sm m-clear" @click="removeAllNote()">Supprimer Tout</button><button
-                  type="button" class="btn btn-outline-danger btn-sm m-clear" @click="removeDoneNote()">Supprimer
-                  "✓"</button>
-              </div>
-            </div>
+              </li>
+            </ul>
           </div>
-        </div>
-        <div class="row justify-content-md-center">
-          <div class="col-md-6 rounded-3 m-middle-case" id="m-trashes" v-if="page == 'trash'">
-            <h2 class="m-h2">Corbeille</h2>
-            <div class="m-list-notes">
-              <ul class="list-group">
-                <li class="list-group-item" v-for="(note, index) in trashes">
-                  <div class="row">
-                    <div class="col-sm-10 m-relative">
-                      <input class="form-check-input me-1 m-checkbox" type="checkbox" value=""
-                        :id="'trashNote-' + index" v-model="note.done">
-                      <label class="form-check-label stretched-link d-inline" :for="'note-' + index">
-                        {{note.message}}</label>
-                    </div>
-                    <div class="col-sm-2"><button type="button" class="btn"><i class="bi bi-trash3 m-trash"
-                          @click="removeTrash(index)"></i></button>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="m-footer-action">
-              <div class="text-right btn-group" role="group"><button type="button"
-                  class="btn btn-outline-danger btn-sm m-clear" @click="removeAllTrash()">Supprimer tout</button>
+          <div class="m-footer-action">
+            <form @submit.prevent="addNote()">
+              <h2 class="m-h2" id="new">Nouveau</h2>
+              <input class="m-text-zone form-control bg-transparent" placeholder="Ecrivez votre nouvelle note..."
+                type="text" id="newNote" autofocus required v-model="newNote" />
+              <label class="visually-hidden" for="newNote">Nouvelle note à saisir</label>
+              <div class="text-center m-button"><button type="submit" class="btn btn-outline-dark"><i
+                    class="bi bi-plus-circle-fill"></i> Ajouter</button>
               </div>
+            </form>
+            <div class="text-right btn-group" role="group"><button type="button"
+                class="btn btn-outline-danger btn-sm m-clear" @click="removeAllNote()"><i class="bi bi-recycle"></i>
+                Supprimer Tout</button><button type="button" class="btn btn-outline-danger btn-sm m-clear"
+                @click="removeDoneNote()"><i class="bi bi-check-circle"></i> Supprimer</button>
             </div>
           </div>
         </div>
       </div>
+      <div class="row justify-content-md-center">
+        <div class="col-md-6 rounded-3 m-middle-case" id="m-trashes" v-if="page == 'trash'">
+          <div class="clearfix">
+            <button type="button" class="btn m-reverse" @click="restoreHistory()" v-if="hasHistory()"><i
+                class="bi bi-arrow-counterclockwise text-black"></i></button>
+            <h2 class="m-h2">Corbeille</h2>
+          </div>
+          <div class="m-list-notes">
+            <ul class="list-group">
+              <li class="list-group-item" v-for="(note, index) in trashes">
+                <div class="row">
+                  <div class="col-sm-10 m-relative">
+                    <input class="form-check-input me-1 m-checkbox" type="checkbox" value="" :id="'trashNote-' + index"
+                      v-model="note.done">
+                    <label class="form-check-label stretched-link d-inline" :for="'note-' + index">
+                      {{note.message}}</label>
+                  </div>
+                  <div class="col-sm-2"><button type="button" class="btn"><i class="bi bi-trash3 m-trash"
+                        @click="removeTrash(index)"></i></button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="m-footer-action">
+            <div class="text-right btn-group" role="group"><button type="button"
+                class="btn btn-outline-danger btn-sm m-clear" @click="removeAllTrash()"><i class="bi bi-recycle"></i>
+                Supprimer Tout</button></div>
+          </div>
+        </div>
+      </div>
+  </div>
   </main>
   </div>
-
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script src="bs-theme.js"></script>
   <script type="module" src="script.js"></script>
 </body>
 
