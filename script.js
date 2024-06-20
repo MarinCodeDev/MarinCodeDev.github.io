@@ -1,4 +1,20 @@
 import { createApp, ref } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
+export const vCustomTooltip = {
+
+    mounted(el) {
+        console.log("mounted on", el)
+        const vCustomTooltip = new bootstrap.Tooltip(el)
+    },
+
+    unmounted(el) {
+        const tooltip = bootstrap.Tooltip.getInstance(el);
+        tooltip.dispose();
+        console.log("unmounted", el, tooltip)
+    }
+
+}
+
 const App = {
     data() {
         const storageData = this.load();
@@ -11,7 +27,7 @@ const App = {
             notes: storageData.notes,
             trashes: storageData.trashes,
 
-            newNote: ""
+            newNote: "",
         }
     },
 
@@ -29,9 +45,14 @@ const App = {
         addNote() {
             if (this.newNote != "") {
                 this.keepHistory()
+                const options = {
+                    day: 'numeric',
+                    month: 'numeric',
+                };
                 this.notes.push(
                     {
                         message: this.newNote,
+                        creationDate: new Date().toLocaleDateString("fr-fr", options),
                         done: false
                     });
 
@@ -52,6 +73,13 @@ const App = {
 
         endEdit(note) {
             note.edition = false
+        },
+
+        restoreNote(index) {
+            this.keepHistory();
+            this.notes.push(this.trashes[index]);
+            this.trashes.splice(index, 1);
+            this.save()
         },
 
         removeNote(index) {
@@ -117,7 +145,6 @@ const App = {
                 return;
             }
 
-            //            this.histories[0];
             var history = (this.histories.splice(0, 1))[0];
 
             this.trashes = JSON.parse(history.trashesJson);
@@ -126,10 +153,26 @@ const App = {
 
         hasHistory() {
             return Boolean(this.histories.length);
-        }
+        },
+    
+        hideEmptyNotes() {        
+            if (this.notes.length > 0) {
+                return false
+            }
+            return true
+        },
 
+        hideEmptyTrashes() {        
+            if (this.trashes.length > 0) {
+                return false
+            }
+            return true
+        },
     }
 }
 
-createApp(App).mount('#app')
+const app = createApp(App);
+
+app.directive("customTooltip", vCustomTooltip);
+app.mount('#app')
 

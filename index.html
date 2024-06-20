@@ -72,38 +72,53 @@
             <h2 class="m-h2 mb-1">Notes</h2>
           </div>
           <div class="m-list-notes">
+            <div class="m-empty" v-if="hideEmptyNotes()">Aucune Note</div>
             <ul class="list-group">
               <li class="list-group-item" v-for="(note, index) in notes">
                 <div class="row">
                   <div class="col-sm-8 m-relative" :class="{'p-0': note.edition}">
-                    <input class="form-check-input me-1 m-checkbox" type="checkbox" value="" :id="'note-' + index"
-                      v-model="note.done" v-if="! note.edition" @change="checkRefresh()">
-                    <label class="form-check-label d-inline m-message stretched-link" :for="'note-' + index"
-                      v-if="! note.edition">{{note.message}}</label>
-                    <form @submit.prevent="endEdit(note)"><input class="form-control bg-transparent text-light"
+                    <time class="m-date text-black">
+                      {{note.creationDate}}
+                    </time>
+                    <div class="form-check">
+                      <input class="form-check-input me-1 m-checkbox" type="checkbox" value="" :id="'note-' + index"
+                        v-model="note.done" v-if="! note.edition" @change="checkRefresh()">
+                      <label class="form-check-label d-inline stretched-link text-break" :for="'note-' + index"
+                        v-if="! note.edition">{{note.message}}</label>
+                    </div>
+                    <form @submit.prevent="endEdit(note)"><input class="form-control bg-transparent"
                         placeholder="Corrigez votre note..." type="text" id="todo" name="to-do" required
                         v-model="note.message" v-if="note.edition == true" /></form>
                   </div>
 
                   <div class="col-sm-4 clearfix">
                     <div class="float-end"><button type="submit" class="btn btn-sm btn-outline-dark m-edit"
-                        @click="startEdit(note)">Modifier</button><button type="button" class="btn text-light" data-bs-toggle="tooltip" data-bs-placement="right" title="Supprimer"><i
-                          class="bi bi-trash3 m-trash" @click="removeNote(index)"></i></button></div>
+                        @click="startEdit(note)">Modifier</button><button type="button" class="btn text-dark"
+                        v-custom-tooltip data-bs-placement="right" @click="removeNote(index)" title="Supprimer"><i
+                          class="bi bi-trash3"></i></button>
+                    </div>
                   </div>
                 </div>
               </li>
             </ul>
           </div>
           <div class="m-footer-action">
-            <form @submit.prevent="addNote()">
+            <div id="m-new-form">
               <h2 class="m-h2" id="new">Nouveau</h2>
-              <input class="m-text-zone form-control bg-transparent" placeholder="Ecrivez votre nouvelle note..."
-                type="text" id="newNote" autofocus required v-model="newNote" />
-              <label class="visually-hidden" for="newNote">Nouvelle note à saisir</label>
-              <div class="text-center m-button"><button type="submit" class="btn btn-outline-dark"><i
-                    class="bi bi-plus-circle-fill"></i> Ajouter</button>
-              </div>
-            </form>
+              <form @submit.prevent='addNote()'>
+                <div class="row">
+                  <div class="col-9">
+                    <input class="m-text-zone form-control bg-transparent" placeholder="Ecrivez votre nouvelle note..."
+                      type="text" id="newNote" autofocus required v-model="newNote" />
+                    <label class="visually-hidden" for="newNote">Nouvelle note à saisir</label>
+                  </div>
+                  <div class="col-3">
+                    <button type="submit" class="btn btn-outline-dark"><i class="bi bi-plus-circle-fill"></i>
+                      Ajouter</button>
+                  </div>
+                </div>
+              </form>
+            </div>
             <div class="text-right btn-group" role="group"><button type="button"
                 class="btn btn-outline-danger btn-sm m-clear" @click="removeAllNote()"><i class="bi bi-recycle"></i>
                 Supprimer Tout</button><button type="button" class="btn btn-outline-danger btn-sm m-clear"
@@ -117,29 +132,44 @@
           <div class="clearfix">
             <button type="button" class="btn m-reverse" @click="restoreHistory()" v-if="hasHistory()"><i
                 class="bi bi-arrow-counterclockwise text-black"></i></button>
-            <h2 class="m-h2">Corbeille</h2>
+            <h2 class="m-h2 mb-1">Corbeille</h2>
           </div>
           <div class="m-list-notes">
+            <div class="m-empty-trash" v-if="hideEmptyTrashes()">Aucune Note</div>
             <ul class="list-group">
               <li class="list-group-item" v-for="(note, index) in trashes">
                 <div class="row">
-                  <div class="col-sm-10 m-relative">
-                    <input class="form-check-input me-1 m-checkbox" type="checkbox" value="" :id="'trashNote-' + index"
-                      v-model="note.done">
-                    <label class="form-check-label stretched-link d-inline" :for="'note-' + index">
-                      {{note.message}}</label>
+                  <div class="col-sm-9 m-relative">
+                    <time class="m-date text-black">
+                      {{note.creationDate}}
+                    </time>
+                    <div class="form-check">
+                      <input class="form-check-input me-1 m-checkbox" disabled type="checkbox" value=""
+                        :id="'trashNote-' + index" v-model="note.done" @change="checkRefresh()">
+                      <label class="form-check-label d-inline stretched-link text-break" :for="'note-' + index"
+                        v-if="! note.edition">{{note.message}}</label>
+                    </div>
                   </div>
-                  <div class="col-sm-2"><button type="button" class="btn"><i class="bi bi-trash3 m-trash"
-                        @click="removeTrash(index)"></i></button>
+                  <div class="col-sm-3 clearfix">
+                    <div class="float-end">
+                      <button type="button" class="btn text-dark" v-custom-tooltip data-bs-placement="right"
+                        @click="restoreNote(index)" title="Restaurer">
+                        <i class="bi bi-box-arrow-left"></i>
+                      </button>
+                      <button type="button" class="btn text-dark" v-custom-tooltip data-bs-placement="right"
+                        @click="removeTrash(index)" title="Supprimer définitivement">
+                        <img class="skull mb-1" src="skull.png" alt="crâne" width="15px"/>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </li>
             </ul>
           </div>
           <div class="m-footer-action">
-            <div class="text-right btn-group" role="group"><button type="button"
-                class="btn btn-outline-danger btn-sm m-clear" @click="removeAllTrash()"><i class="bi bi-recycle"></i>
-                Supprimer Tout</button></div>
+            <button type="button" class="btn btn-outline-danger btn-sm m-clear" @click="removeAllTrash()"><i
+                class="bi bi-recycle"></i>
+              Supprimer Tout</button>
           </div>
         </div>
       </div>

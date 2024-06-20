@@ -11,13 +11,13 @@ html[data-bs-theme=light] .m-middle-case {
 }
 
 html[data-bs-theme=light] .list-group-item {
-    background-color: rgba(0, 81, 255, 0.518);
+    background-color: rgba(0, 145, 255, 0.265);
 }
 
 body {
     font-family: Montserrat;
     background-image: url("bgzob.jpg");
-    background-position: center;
+    background-size: cover;
 }
 
 #m-page-title {
@@ -112,10 +112,24 @@ body {
 
 }
 
-.m-message {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+.m-empty {
+    text-align: center;
+    font-size: xxx-large;
+    position: absolute;
+    top: 35%;
+    width: 100%;
+    color: #00000037;
+    font-weight: 200;
+}
+
+.m-empty-trash {
+    text-align: center;
+    font-size: xxx-large;
+    position: absolute;
+    top: 25%;
+    width: 100%;
+    color: #00000037;
+    font-weight: 200;
 }
 
 .m-edit {
@@ -125,8 +139,16 @@ body {
 .m-list-notes {
     min-height: 200px;
     padding-bottom: 20px;
+    position: relative;
 }
 
+.m-date {
+    position: absolute;
+    display: block;
+    font-size: smaller;
+    top: -7px;
+    left: 37px;
+}
 
 .m-list-notes .form-check-label {
     color: rgb(0, 0, 0);
@@ -175,10 +197,6 @@ body {
     animation-fill-mode: forwards;
 }
 
-.m-trash {
-    color: #000000;
-}
-
 .m-trash:hover {
     color: red;
     transition: .2s;
@@ -199,7 +217,6 @@ body {
     font-size: 1rem;
     color: rgb(0, 0, 0);
     margin: 0 auto 10px auto;
-    width: 80%;
 }
 
 .form-control.m-text-zone:focus {
@@ -220,15 +237,19 @@ input[type=checkbox] {
 
 input[type=checkbox]:checked {
     background-color: #000000 !important;
-    border-color: #ffffff;
+    border: #000000;
     box-shadow: #000000;
+}
+
+.form-check-input {
+    border-color: #000000;
 }
 
 .form-check-input:focus {
     box-shadow: none;
 }
 
-.m-button {
+.m-new-form {
     margin-bottom: 10px;
 }
 
